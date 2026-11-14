@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This is a fork of [trumank/retoc](https://github.com/trumank/retoc) for building S.T.A.L.K.E.R. 2 mods in the
-> layout GSC's Zone Kit produces, and is the `retoc` that [ZonePak](https://github.com/SSyl/ZonePak) expects. It
+> layout GSC's Zone Kit produces, and is the `retoc` that [ZonePak](https://github.com/SSyl/STALKER2-ZonePak) expects. It
 > changes `to-zen` as described under [Changes from upstream](#changes-from-upstream) and otherwise matches
 > upstream commit `885a8da`. For anything else, use upstream retoc.
 
