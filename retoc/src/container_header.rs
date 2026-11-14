@@ -198,7 +198,7 @@ impl FIoContainerHeader {
             packages: StoreEntries::default(),
             optional_segment_package_ids: vec![],
             optional_segment_store_entries: vec![],
-            redirect_name_map: FNameMap::default(),
+            redirect_name_map: FNameMap::create(EMappedNameType::Container),
             localized_packages: vec![],
             package_redirects: vec![],
             soft_package_references: None,

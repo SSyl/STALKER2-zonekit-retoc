@@ -774,7 +774,9 @@ fn action_to_zen(args: ActionToZen, config: Arc<Config>) -> Result<()> {
 
     let toc_version = config.toc_version_override.unwrap_or(args.version.toc_version());
 
-    let mut writer = IoStoreWriter::new(&args.output, toc_version, Some(container_header_version), mount_point.into())?;
+    // RETOC_TOC_MOUNT_POINT overrides the directory-index mount point (asset paths still resolve from ../../../)
+    let toc_mount_point: UEPathBuf = std::env::var("RETOC_TOC_MOUNT_POINT").map(|m| UEPathBuf::from(m)).unwrap_or_else(|_| mount_point.into());
+    let mut writer = IoStoreWriter::new(&args.output, toc_version, Some(container_header_version), toc_mount_point)?;
 
     let log = Log::new_stdout(args.verbose, args.debug);
     let mut asset_paths = vec![];
@@ -931,6 +933,14 @@ fn action_to_zen(args: ActionToZen, config: Arc<Config>) -> Result<()> {
 
     prog_ref.inspect(|p| p.finish_with_message(""));
     log.set_progress(None);
+
+    // RETOC_PACKAGE_REDIRECTS="/Game/A=/Mod/A;..." adds container header package redirects (source name -> target package)
+    if let Ok(spec) = std::env::var("RETOC_PACKAGE_REDIRECTS") {
+        for pair in spec.split(';').filter(|s| !s.is_empty()) {
+            let (source, target) = pair.split_once('=').context("RETOC_PACKAGE_REDIRECTS entries must be source=target")?;
+            writer.add_package_redirect(source, retoc::FPackageId::from_name(target))?;
+        }
+    }
 
     writer.finalize()?;
 
